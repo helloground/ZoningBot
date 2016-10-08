@@ -40,7 +40,8 @@
         //Set global lat and lng variables
         var locationJSON_lat;
         var locationJSON_lng;
-
+        //set city. add to this later to expand for more sites
+        var city = Minneapolis;
         //create map
       function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -75,7 +76,12 @@
       }
         //Cast lat,lng into GeoJSON point object
       function latlngToGeoJSON(lat, lng) {
-          var GeoJSONpoint_address;
+          var GeoJSONpoint_address = { "type": "Point", "coordinates": [lat, lng] };
+          return GeoJSONpoint_address;
+      }
+        //Pull in zoning GeoJSON data for Minneapolis
+      function dataPull(city) {
+          var ZoningAreas = JSON.parse()
       }
       
 
@@ -83,5 +89,6 @@
     <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMYxtuNEsa7MyF7YnQ7vNiDmixlfKiWuA&callback=initMap">
     </script>
+    <script async defer src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script>
 </body>
 </html>
