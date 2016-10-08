@@ -41,7 +41,7 @@
         var locationJSON_lat;
         var locationJSON_lng;
         //set city. add to this later to expand for more sites
-        var city = Minneapolis;
+        var city = "Minneapolis";
         //create map
       function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -51,7 +51,8 @@
         var geocoder = new google.maps.Geocoder();
 
         document.getElementById('submit').addEventListener('click', function() {
-          geocodeAddress(geocoder, map);
+            geocodeAddress(geocoder, map);
+            dataPull();
         });
       }
         //geocode address
@@ -80,8 +81,10 @@
           return GeoJSONpoint_address;
       }
         //Pull in zoning GeoJSON data for Minneapolis
-      function dataPull(city) {
-          var ZoningAreas = JSON.parse()
+      function dataPull() {
+          var cityZoningDataRaw = jQuery.getJSON('http://opendata.minneapolismn.gov/datasets/9e0d092ecdfd4089b2ef3021e739f8c7_0.geojson');
+          //var cityZoningDataParsed = jQuery.parseJSON(cityZoningDataRaw);
+          console.log("Here is the data "+ JSON.stringify(cityZoningDataRaw.geometry));
       }
       
 
@@ -89,6 +92,13 @@
     <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMYxtuNEsa7MyF7YnQ7vNiDmixlfKiWuA&callback=initMap">
     </script>
-    <script async defer src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script>
+    <script async defer
+             src="C:\Users\Matth\Development\jquery-3.1.1.min.js">
+
+    </script>
+    <script async defer
+             src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'>
+
+    </script>
 </body>
 </html>
