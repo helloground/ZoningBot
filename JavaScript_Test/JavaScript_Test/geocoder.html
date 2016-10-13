@@ -132,14 +132,23 @@
 
            var point = latlngToGeoJSON(lat, lng);
             //console point
-            //console.log("Point: " + JSON.stringify(point));
+            console.log("Point: " + JSON.stringify(point));
             //console featureCollection
             //console.log("Feature Collection: "+ JSON.stringify(featureCollection.features[0]));
-           var ItIsInside = insideZone(point, featureCollection,0);
-            console.log("It is inside " + ItIsInside);
-            console.log("The array is: " + featureCollection.features.length);
-            return ItIsInside;
+           //console.log("The array is: " + featureCollection.features.length);
+           var ArrayLength = featureCollection.features.length;
+           var ItIsInside = false;
+            //for loop to find what zone address is in
+           for (i = 0; i < (ArrayLength + 1); i++) {
+               ItIsInside = insideZone(point, featureCollection, i);
+
+               //console.log("It is inside" + ItIsInside + i);
+               if (ItIsInside == true) { break;}
+           }
+            console.log("It is inside (final)" + ItIsInside);
             
+            return ItIsInside;
+            //why always false?
         }
 
         //helper function for inside helper
