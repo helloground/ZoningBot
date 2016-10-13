@@ -132,13 +132,20 @@
 
            var point = latlngToGeoJSON(lat, lng);
             //console point
-            console.log("Point: " + JSON.stringify(point));
+            //console.log("Point: " + JSON.stringify(point));
             //console featureCollection
-            console.log("Feature Collection: "+ JSON.stringify(featureCollection.features[0]));
-            var isItInside = turf.inside(point, featureCollection.features[0]);
-            console.log("It is inside" + isItInside);
-            return isItInside;
+            //console.log("Feature Collection: "+ JSON.stringify(featureCollection.features[0]));
+           var ItIsInside = insideZone(point, featureCollection,0);
+            console.log("It is inside " + ItIsInside);
+            console.log("The array is: " + featureCollection.features.length);
+            return ItIsInside;
             
+        }
+
+        //helper function for inside helper
+        function insideZone(point,featureCollection,arrayIndex) {
+            var isItInside = turf.inside(point, featureCollection.features[0]);
+            return isItInside;
         }
 
        
