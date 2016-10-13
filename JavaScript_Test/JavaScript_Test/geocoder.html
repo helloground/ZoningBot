@@ -36,6 +36,8 @@
         <input id="submit" type="button" value="Geocode">
     </div>
     <div id="map"></div>
+    
+   </script>
     <script>
         //Set global lat and lng variables
         var locationJSON_lat;
@@ -80,20 +82,84 @@
           var GeoJSONpoint_address = { "type": "Point", "coordinates": [lat, lng] };
           return GeoJSONpoint_address;
       }
+        //CORS helper function
+      function createCORSRequest(method, url) {
+          var xhr = new XMLHttpRequest();
+          if ("withCredentials" in xhr) {
+
+              // Check if the XMLHttpRequest object has a "withCredentials" property.
+              // "withCredentials" only exists on XMLHTTPRequest2 objects.
+              xhr.open(method, url, true);
+
+          } else if (typeof XDomainRequest != "undefined") {
+
+              // Otherwise, check if XDomainRequest.
+              // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+              xhr = new XDomainRequest();
+              xhr.open(method, url);
+
+          } else {
+
+              // Otherwise, CORS is not supported by the browser.
+              xhr = null;
+
+          }
+          return xhr;
+      }
+
+     
+
         //Pull in zoning GeoJSON data for Minneapolis
       function dataPull() {
-          var cityZoningDataRaw = jQuery.getJSON('http://opendata.minneapolismn.gov/datasets/9e0d092ecdfd4089b2ef3021e739f8c7_0.geojson');
+          //var cityZoningDataRaw = jQuery.getJSON('http://opendata.minneapolismn.gov/datasets/9e0d092ecdfd4089b2ef3021e739f8c7_0.geojson');
           //var cityZoningDataParsed = jQuery.parseJSON(cityZoningDataRaw);
-          console.log("Here is the data "+ JSON.stringify(cityZoningDataRaw.geometry));
+          var url = 'http://opendata.minneapolismn.gov/datasets/9e0d092ecdfd4089b2ef3021e739f8c7_0.geojson';
+          //var url = 'https://services.arcgis.com/afSMGVsC7QlRK1kZ/arcgis/rest/services/msvcCPED_PRIMARY_ZONING/FeatureServer/0/query?outFields=*&where=1%3D1';
+          /*var xhr = createCORSRequest('GET', url);
+          xhr.send;
+          console.log("Here is the data " + jQuery.parseJSON(xhr.response.type)); */
+          /*$.ajax({
+              url: url,
+              dataType: 'jsonp',
+              jsonp: 'callback',
+              type: 'GET',
+              async: true,
+              crossDomain: true,
+              success: function () { },
+              failure: function () { },
+              complete: function (data) {
+                  if (data.readyState == '4' && data.status == '200') {
+                      console.log("SUCCESS")
+                  }
+                  else {
+                      console.log("FAIL")
+                  }
+              }
+          });*/
+
+          // jQuery cross domain ajax
+          $.get(url).done(function (data) {
+              console.log(data);
+          });
+
+          // using XMLHttpRequest
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", url, true);
+          xhr.onload = function () {
+              console.log(xhr.responseText);
+          };
+          xhr.send();
+
       }
+
+       
       
 
     </script>
     <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMYxtuNEsa7MyF7YnQ7vNiDmixlfKiWuA&callback=initMap">
     </script>
-    <script async defer
-             src="C:\Users\Matth\Development\jquery-3.1.1.min.js">
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
 
     </script>
     <script async defer
