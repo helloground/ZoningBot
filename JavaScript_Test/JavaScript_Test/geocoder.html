@@ -62,6 +62,7 @@
             console.log(ZoningFeatureCollection);
             //try turf inside fuction
             IDZone(locationJSON_lat, locationJSON_lng, ZoningFeatureCollection);
+            
         });
       }
         //geocode address
@@ -91,7 +92,7 @@
               "type": "Feature",
               "geometry": {
                   "type": "Point",
-                  "coordinates": [lat, lng]
+                  "coordinates": [lng, lat]
               }
           };
           return point;
@@ -126,34 +127,70 @@
           return ZoningFeatureCollection;
       }
 
+        //IDZone Test Data
+        //var pt2 = {
+        //    "type": "Feature",
+        //    "properties": {
+        //        "marker-color": "#0f0"
+        //    },
+        //    "geometry": {
+        //        "type": "Point",
+        //        "coordinates": [-111.873779, 40.647303]
+        //    }
+        //};
+        //var poly = {
+        //    "type": "Feature",
+        //    "properties": {},
+        //    "geometry": {
+        //        "type": "Polygon",
+        //        "coordinates": [[
+        //          [-112.074279, 40.52215],
+        //          [-112.074279, 40.853293],
+        //          [-111.610107, 40.853293],
+        //          [-111.610107, 40.52215],
+        //          [-112.074279, 40.52215]
+        //        ]]
+        //    }
+        //};
+        //function Tester(pt, poly) {
+        //    var isInside2 = turf.inside(pt2, poly);
+        //    //=isInside2
+        //    return isInside2;
+
+        //}
+
+
         function IDZone(lat, lng, featureCollection) {
             //identifies what zone address is in
             //Basic Test use turf to say yes or no with 'inside'
 
+
+           
+
            var point = latlngToGeoJSON(lat, lng);
             //console point
-            console.log("Point: " + JSON.stringify(point));
+           console.log("Point: " + JSON.stringify(point));
+           console.log("Feature: " + JSON.stringify(featureCollection.features[0]));
             //console featureCollection
             //console.log("Feature Collection: "+ JSON.stringify(featureCollection.features[0]));
            //console.log("The array is: " + featureCollection.features.length);
            var ArrayLength = featureCollection.features.length;
            var ItIsInside = false;
             //for loop to find what zone address is in
-           for (i = 0; i < (ArrayLength + 1); i++) {
+           for (i = 0; i < (ArrayLength); i++) {
                ItIsInside = insideZone(point, featureCollection, i);
-
+               //console.log(insideZone(point, featureCollection, i));
                //console.log("It is inside" + ItIsInside + i);
                if (ItIsInside == true) { break;}
            }
-            console.log("It is inside (final)" + ItIsInside);
-            
-            return ItIsInside;
+            console.log("It is inside (final)" + ItIsInside + i);
+            console.log("Zone: " + JSON.stringify(featureCollection.features[i].properties.ZONE_CODE));
             //why always false?
         }
 
         //helper function for inside helper
         function insideZone(point,featureCollection,arrayIndex) {
-            var isItInside = turf.inside(point, featureCollection.features[0]);
+            var isItInside = turf.inside(point, featureCollection.features[arrayIndex]);
             return isItInside;
         }
 
@@ -166,7 +203,7 @@
     </script>
     <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
 
-    </script>
+   
     <script async defer
              src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'>
 
