@@ -43,7 +43,7 @@
         var locationJSON_lat;
         var locationJSON_lng;
         //Create Zoning Feature Collection object
-        var ZoningFeatureCollection;
+        var ZoningFeatureCollection = [];
 
         //Set city. add to this later to expand for more sites
         var city = "Minneapolis";
@@ -58,8 +58,8 @@
         document.getElementById('submit').addEventListener('click', function() {
             geocodeAddress(geocoder, map);
             //run dataPull to collect zone data
+            console.log("Object " + ZoningFeatureCollection[1]);
             dataPull();
-            console.log(ZoningFeatureCollection);
             //try turf inside fuction
             IDZone(locationJSON_lat, locationJSON_lng, ZoningFeatureCollection);
             
@@ -99,17 +99,17 @@
       }
       
 
-        function dataPull() {
-            //Pulls in zoning GeoJSON data for Minneapolis
-
+      function dataPull() {
+          //Pulls in zoning GeoJSON data for Minneapolis
           //Look into sync issues
           //hardcoded data source for geojson zoning map data
-          var url = 'http://opendata.minneapolismn.gov/datasets/9e0d092ecdfd4089b2ef3021e739f8c7_0.geojson';
-         
+          var primaryZoning_url = 'http://opendata.minneapolismn.gov/datasets/9e0d092ecdfd4089b2ef3021e739f8c7_0.geojson';
+          var overlayZoning_url = 'http://opendata.minneapolismn.gov/datasets/d4f231795f0a4414ae8e2d8db2a45cda_0.geojson';
+          //Pull in primary zoning data 
           // jQuery cross domain ajax
-          $.get(url).done(function (data) {
+          $.get(primaryZoning_url).done(function (data) {
               //console.log(data);
-              ZoningFeatureCollection = data;
+              ZoningFeatureCollection[0] = data;
               //console.log(ZoningFeatureCollection);
           });
           //ZoningFeatureCollection = response.responseJSON[responseJSON];
@@ -123,8 +123,12 @@
               console.log(xhr.responseText);
           };
           xhr.send();*/
-          
-          return ZoningFeatureCollection;
+          //Pull in overlay zoning data
+          $.get(overlayZoning_url).done(function (data) {
+              //console.log(data);
+              ZoningFeatureCollection[1] = data;
+              return ZoningFeatureCollection;
+          })
       }
 
         //IDZone Test Data
@@ -157,7 +161,7 @@
         //    //=isInside2
         //    return isInside2;
 
-        //}
+        
 
 
         function IDZone(lat, lng, featureCollection) {
@@ -170,22 +174,35 @@
            var point = latlngToGeoJSON(lat, lng);
             //console point
            console.log("Point: " + JSON.stringify(point));
-           console.log("Feature: " + JSON.stringify(featureCollection.features[0]));
+           console.log("Feature: " + JSON.stringify(featureCollection[0].features[0]));
             //console featureCollection
             //console.log("Feature Collection: "+ JSON.stringify(featureCollection.features[0]));
            //console.log("The array is: " + featureCollection.features.length);
-           var ArrayLength = featureCollection.features.length;
+           var ArrayLength_Primary = featureCollection[0].features.length;
+           var ArrayLength_Overlay = featureCollection[1].features.length;
            var ItIsInside = false;
             //for loop to find what zone address is in
-           for (i = 0; i < (ArrayLength); i++) {
-               ItIsInside = insideZone(point, featureCollection, i);
+           for (i = 0; i < (ArrayLength_Primary); i++) {
+               ItIsInside = insideZone(point, featureCollection[0], i);
                //console.log(insideZone(point, featureCollection, i));
                //console.log("It is inside" + ItIsInside + i);
                if (ItIsInside == true) { break;}
            }
             console.log("It is inside (final)" + ItIsInside + i);
-            console.log("Zone: " + JSON.stringify(featureCollection.features[i].properties.ZONE_CODE));
-            //why always false?
+            console.log("Primary Zone: " + JSON.stringify(featureCollection[0].features[i].properties.ZONE_CODE));
+
+            //add in overlay feature
+            ItIsInside = false;
+            //for loop to find what zone address is in
+            for (i = 0; i < (ArrayLength_Overlay) ; i++) {
+                ItIsInside = insideZone(point, featureCollection[1], i);
+                //console.log(insideZone(point, featureCollection, i));
+                //console.log("It is inside" + ItIsInside + i);
+                if (ItIsInside == true) { break; }
+            }
+            console.log("It is inside (final)" + ItIsInside + i);
+            console.log("Overlay Zone: " + JSON.stringify(featureCollection[0].features[i].properties.ZONE_CODE));
+
         }
 
         //helper function for inside helper
